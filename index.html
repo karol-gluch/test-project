@@ -1430,8 +1430,8 @@
         "use strict";
 
         /* ============================================================
-       ICONS
-    ============================================================ */
+           ICONS
+        ============================================================ */
         const ICONS = {
             dumbbell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5"/><path d="M4 4l2.5 2.5"/><path d="M17.5 17.5 20 20"/><rect x="2" y="7" width="4" height="4" rx="1"/><rect x="2.8" y="7.8" width="2.4" height="2.4" rx=".5"/><rect x="18" y="13" width="4" height="4" rx="1"/><rect x="18.8" y="13.8" width="2.4" height="2.4" rx=".5"/><path d="M8.5 4.5 4.5 8.5"/><path d="M19.5 15.5 15.5 19.5"/></svg>',
             home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>',
@@ -1457,8 +1457,8 @@
         const PLATE_COLORS = ['var(--plate-red)', 'var(--plate-blue)', 'var(--plate-yellow)', 'var(--plate-green)'];
 
         /* ============================================================
-       STATE
-    ============================================================ */
+           STATE
+        ============================================================ */
         const STORAGE_KEY = 'gymtrack_state_v1';
         let state = null;
 
@@ -1527,11 +1527,12 @@
         }
 
         function goto(view, params) {
+            const isSameView = state.view === view;
             state.view = view;
             state.viewParams = params || {};
             save();
             render();
-            window.scrollTo(0, 0);
+            if (!isSameView) window.scrollTo(0, 0);
         }
 
         function escapeHtml(str) {
@@ -1556,8 +1557,8 @@
         }
 
         /* ============================================================
-       TOAST
-    ============================================================ */
+           TOAST
+        ============================================================ */
         let toastTimer = null;
 
         function showToast(msg) {
@@ -1572,8 +1573,8 @@
         }
 
         /* ============================================================
-       MODAL SYSTEM
-    ============================================================ */
+           MODAL SYSTEM
+        ============================================================ */
         function closeModal() {
             document.getElementById('modalRoot').innerHTML = '';
         }
@@ -1683,8 +1684,8 @@
         }
 
         /* ============================================================
-       CONGRATS OVERLAY
-    ============================================================ */
+           CONGRATS OVERLAY
+        ============================================================ */
         function showCongrats(count) {
             const root = document.getElementById('congratsRoot');
             const colors = ['var(--primary)', 'var(--accent)', 'var(--success)', 'var(--plate-red)', '#7c3aed'];
@@ -1715,8 +1716,8 @@
         }
 
         /* ============================================================
-       RENDER: APP SHELL (header + nav)
-    ============================================================ */
+           RENDER: APP SHELL (header + nav)
+        ============================================================ */
         function render() {
             const app = document.getElementById('app');
             if (!state.users.length) {
@@ -1806,8 +1807,8 @@
         }
 
         /* ============================================================
-       ONBOARDING
-    ============================================================ */
+           ONBOARDING
+        ============================================================ */
         function renderOnboarding() {
             return `
     <div class="onboard-wrap">
@@ -1840,8 +1841,8 @@
         }
 
         /* ============================================================
-       VIEW ROUTER
-    ============================================================ */
+           VIEW ROUTER
+        ============================================================ */
         function renderView(user) {
             switch (state.view) {
                 case 'dashboard':
@@ -1890,8 +1891,8 @@
         }
 
         /* ============================================================
-       DASHBOARD
-    ============================================================ */
+           DASHBOARD
+        ============================================================ */
         function renderDashboard(user) {
             const dateStr = new Date().toLocaleDateString('pl-PL', {weekday: 'long', day: 'numeric', month: 'long'});
             const plates = [];
@@ -2022,8 +2023,8 @@
         }
 
         /* ============================================================
-       SESSION (active training)
-    ============================================================ */
+           SESSION (active training)
+        ============================================================ */
         function startSession(user, planId) {
             if (user.activeSession) {
                 goto('session');
@@ -2079,8 +2080,8 @@
                     setsHtml += `
         <div class="set-row" data-ex="${idx}" data-set="${sIdx}">
           <div class="set-idx mono">${sIdx + 1}</div>
-          <div class="set-input-wrap"><input class="set-input mono" type="number" inputmode="numeric" min="0" placeholder="powt." data-field="reps" value="${st.reps !== '' && st.reps !== null && st.reps !== undefined ? st.reps : ''}"></div>
           <div class="set-input-wrap"><input class="set-input mono" type="number" inputmode="decimal" min="0" step="0.5" placeholder="kg" data-field="weight" value="${st.weight !== '' && st.weight !== null && st.weight !== undefined ? st.weight : ''}"></div>
+          <div class="set-input-wrap"><input class="set-input mono" type="number" inputmode="numeric" min="0" placeholder="powt." data-field="reps" value="${st.reps !== '' && st.reps !== null && st.reps !== undefined ? st.reps : ''}"></div>
           <button class="set-remove" data-remove-set data-ex="${idx}" data-set="${sIdx}">${ICONS.x}</button>
         </div>`;
                 });
@@ -2094,7 +2095,7 @@
           <button class="icon-btn exercise-remove" data-remove-exercise="${idx}" title="Usuń ćwiczenie">${ICONS.trash}</button>
         </div>
         <div class="sets-table">
-          ${ex.sets.length ? `<div class="sets-head-row"><div></div><div>Powtórzenia</div><div>Obciążenie</div><div></div></div>` : ''}
+          ${ex.sets.length ? `<div class="sets-head-row"><div></div><div>Obciążenie</div><div>Powtórzenia</div><div></div></div>` : ''}
           ${setsHtml}
         </div>
         <button class="add-set-btn" data-add-set="${idx}">${ICONS.plus} Dodaj serię</button>
@@ -2179,7 +2180,7 @@
                         const rows = document.querySelectorAll(`[data-exercise-idx="${idx}"] .set-row`);
                         const lastRow = rows[rows.length - 1];
                         if (lastRow) {
-                            const inp = lastRow.querySelector('[data-field="reps"]');
+                            const inp = lastRow.querySelector('[data-field="weight"]');
                             if (inp) inp.focus();
                         }
                     }, 60);
@@ -2263,8 +2264,8 @@
         }
 
         /* ============================================================
-       PLANS
-    ============================================================ */
+           PLANS
+        ============================================================ */
         function renderPlansView(user) {
             let html = `<div class="view-title">Plany treningowe</div><div class="view-sub">Stałe zestawy ćwiczeń, np. Trening A / B / C.</div>`;
             if (!user.plans.length) {
@@ -2390,8 +2391,8 @@
         }
 
         /* ============================================================
-       HISTORY
-    ============================================================ */
+           HISTORY
+        ============================================================ */
         function renderHistoryView(user) {
             let html = `<div class="view-title">Historia</div><div class="view-sub">${user.history.length} zapisanych treningów</div>`;
             if (!user.history.length) {
@@ -2455,8 +2456,8 @@
         }
 
         /* ============================================================
-       SETTINGS
-    ============================================================ */
+           SETTINGS
+        ============================================================ */
         function renderSettingsView(user) {
             return `
     <div class="view-title">Ustawienia</div>
@@ -2599,8 +2600,8 @@
         }
 
         /* ============================================================
-       EKSPORT / IMPORT DANYCH
-    ============================================================ */
+           EKSPORT / IMPORT DANYCH
+        ============================================================ */
         function triggerDownload(filename, content, mime) {
             const blob = new Blob([content], {type: mime});
             const url = URL.createObjectURL(blob);
@@ -2702,8 +2703,8 @@
         }
 
         /* ============================================================
-       INIT
-    ============================================================ */
+           INIT
+        ============================================================ */
         load();
         render();
 
